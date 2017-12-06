@@ -163,7 +163,7 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
-    args.data = ast.literal_eval(args.data)
+    args.data = ast.literal_eval(args.data) if args.data else None
     args.credentials_json_data = json.loads(args.credentials_json_data)
 
     main(**vars(args))
