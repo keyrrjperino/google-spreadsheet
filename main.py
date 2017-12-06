@@ -29,6 +29,38 @@ class GoogleSpreadsheet:
             discoveryServiceUrl=SHEETS_DISCOVERY_URL
         )
 
+    def get(self):
+        service = self.get_sheets_service()
+
+        try:
+            result = service.spreadsheets().values().get(
+                spreadsheetId=self.spreadsheet_id,
+                range=self.range_name,
+                majorDimension=self.major_dimension
+            ).execute()['values']
+
+            response = {
+                "data": result
+            }
+
+        except (httplib2.HttpLib2Error, socket.error) as ex:
+            response = {
+                "error": {
+                    "code": 408,
+                    "message": "Timeout error. Acessing google spreadsheet api."
+                }
+            }
+
+        except (HttpError) as ex:
+            response = {
+                "error": {
+                    "code": 400,
+                    "message": ex
+                }
+            }
+
+        return response
+
     def update(self):
         final_payload = {
             "range": self.range_name,
